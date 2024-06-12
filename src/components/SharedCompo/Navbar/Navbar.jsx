@@ -1,11 +1,74 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { CiMenuBurger } from 'react-icons/ci';
+import { MdOutlineRestaurantMenu } from 'react-icons/md';
+import { NavLink } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { AuthContext } from '../../../providers/AuthProvider';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logOut } = useContext(AuthContext);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const handleLogOut = () => {
+    logOut()
+      .then(() => {
+        toast.success('Successfully Logging out.');
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+  const navItems = (
+    <>
+      <li>
+        <NavLink
+          to='/'
+          className='text-white hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
+        >
+          Home
+        </NavLink>
+      </li>
+      {user?.email ? (
+        <>
+          <button
+            onClick={() => handleLogOut()}
+            className=' text-white hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium  duration-300 ease-in-out'
+          >
+            Log Out
+          </button>
+          <li>
+            <NavLink
+              to='/my-bookings'
+              className='text-white hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
+            >
+              My Bookings
+            </NavLink>
+          </li>
+        </>
+      ) : (
+        <li>
+          <NavLink
+            to='/login'
+            className='text-white hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
+          >
+            Login
+          </NavLink>
+        </li>
+      )}
+      <li>
+        <NavLink
+          to='/register'
+          className='text-white hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
+        >
+          Register
+        </NavLink>
+      </li>
+    </>
+  );
 
   return (
     <nav className='bg-blue-600'>
@@ -20,39 +83,7 @@ const Navbar = () => {
               onClick={toggleMenu}
             >
               <span className='sr-only'>Open main menu</span>
-              {isOpen ? (
-                <svg
-                  className='block h-6 w-6'
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                  aria-hidden='true'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    d='M6 18L18 6M6 6l12 12'
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className='block h-6 w-6'
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                  aria-hidden='true'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    d='M4 6h16M4 12h16m-7 6h7'
-                  />
-                </svg>
-              )}
+              {isOpen ? <MdOutlineRestaurantMenu /> : <CiMenuBurger />}
             </button>
           </div>
           <div className='flex-1 flex items-center justify-center sm:items-stretch sm:justify-start'>
@@ -60,32 +91,7 @@ const Navbar = () => {
               <h1 className='text-white text-xl font-bold'>Brand</h1>
             </div>
             <div className='hidden sm:block sm:ml-6'>
-              <div className='flex space-x-4'>
-                <a
-                  href='#'
-                  className='text-white hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
-                >
-                  Home
-                </a>
-                <a
-                  href='#'
-                  className='text-white hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
-                >
-                  About
-                </a>
-                <a
-                  href='#'
-                  className='text-white hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
-                >
-                  Services
-                </a>
-                <a
-                  href='#'
-                  className='text-white hover:bg-blue-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
-                >
-                  Contact
-                </a>
-              </div>
+              <ul className='flex space-x-4 items-center'>{navItems}</ul>
             </div>
           </div>
         </div>
@@ -95,32 +101,7 @@ const Navbar = () => {
         className={`${isOpen ? 'block' : 'hidden'} sm:hidden`}
         id='mobile-menu'
       >
-        <div className='px-2 pt-2 pb-3 space-y-1'>
-          <a
-            href='#'
-            className='text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium'
-          >
-            Home
-          </a>
-          <a
-            href='#'
-            className='text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium'
-          >
-            About
-          </a>
-          <a
-            href='#'
-            className='text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium'
-          >
-            Services
-          </a>
-          <a
-            href='#'
-            className='text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium'
-          >
-            Contact
-          </a>
-        </div>
+        <ul className='px-2 pt-2 pb-3 space-y-1'>{navItems}</ul>
       </div>
     </nav>
   );
