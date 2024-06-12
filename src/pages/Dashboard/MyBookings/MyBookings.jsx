@@ -3,17 +3,20 @@ import BookingCard from './BookingCard';
 import axios from 'axios';
 import { AuthContext } from '../../../providers/AuthProvider';
 import Swal from 'sweetalert2';
+import useAxiosInstance from '../../../hooks/useAxiosInstance';
 
 const MyBookings = () => {
   const { user } = useContext(AuthContext);
+  const axiosInstance = useAxiosInstance();
   const [bookings, setBookings] = useState([]);
-  const url = `http://localhost:5001/bookings?email=${user?.email}`;
+  const url = `/bookings?email=${user?.email}`;
   useEffect(() => {
-    axios
-      .get(url, { withCredentials: true })
+    // auth step - 8
+    axiosInstance
+      .get(url) // যদি fetch দিয়ে করলে {credetials: include} দিতে হবে
       .then((data) => setBookings(data.data))
       .catch((err) => console.log(err.message));
-  }, [url]);
+  }, [url, axiosInstance]);
 
   const handleDeleteBooking = (id) => {
     console.log(id);

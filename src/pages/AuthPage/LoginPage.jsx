@@ -1,11 +1,11 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { AuthContext } from '../../providers/AuthProvider';
-import axios from 'axios';
+import useAuth from '../../hooks/useAuth';
 
 const LoginPage = () => {
-  const { signIn } = useContext(AuthContext);
+  const { signIn } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const location = useLocation();
@@ -22,14 +22,7 @@ const LoginPage = () => {
       console.log(loggedUser);
       toast.success('Successfully logged in.');
 
-      const user = { email };
-      const response = await axios.post('http://localhost:5001/jwt', user, {
-        withCredentials: true,
-      });
-
-      if (response.data.success) {
-        navigate(location?.state || '/');
-      }
+      navigate(location?.state || '/');
     } catch (err) {
       console.log(err.message);
       toast.error(err.message);
